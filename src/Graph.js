@@ -12,12 +12,15 @@ const { Option } = Select;
 
 class Graph extends React.Component {
   state = {
-    layout: "circle",
+    layout: "concentric",
     source: "example1"
   };
   shouldComponentUpdate(props, nextprops) {
-    console.log(props, nextprops);
-    return true;
+    console.log(this.state, nextprops);
+    return (
+      this.state.layout !== nextprops.layout ||
+      this.state.source !== nextprops.source
+    );
   }
   componentDidMount() {}
   render() {
@@ -56,7 +59,7 @@ class Graph extends React.Component {
       <div>
         <div style={{ display: "flex" }}>
           <div>
-            <Text>Select Graph Layout</Text>
+            <Text>Seleccione layout de grafo</Text>
             <Select
               style={{ width: 120, margin: 10 }}
               value={this.state.layout}
@@ -81,7 +84,7 @@ class Graph extends React.Component {
             </Select>
           </div>
           <div>
-            <Text>Select Graph</Text>
+            <Text>Seleccione Source del grafo</Text>
             <Select
               style={{ width: 220, margin: 10 }}
               value={this.state.source}
