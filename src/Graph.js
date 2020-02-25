@@ -6,7 +6,8 @@ import "antd/dist/antd.css";
 import "./index.css";
 import { Typography } from "antd";
 import { Select } from "antd";
-
+import data from "./data.json"
+import dataStyle from "./data-style.json"
 const { Text } = Typography;
 const { Option } = Select;
 
@@ -48,13 +49,13 @@ class Graph extends React.Component {
       { data: { source: "8", target: "5", label: "Edge from Node1 to Node2" } }
     ];
     const example2 = CytoscapeComponent.normalizeElements(networks.elements);
-
+    
     let layout = {
       name: this.state.layout,
       minNodeSpacing: 100,
       directed: true
     };
-    console.log("render", this.state.layout);
+    console.log("render", dataStyle);
     return (
       <div>
         <div style={{ display: "flex" }}>
@@ -94,6 +95,7 @@ class Graph extends React.Component {
             >
               <Option value={"example1"}>Ejemplo 1</Option>
               <Option value={"example2"}>Ejemplo 2 desde archivo</Option>
+              <Option value={"example3"}>Ejemplo 3 </Option>
             </Select>
           </div>
         </div>
@@ -129,6 +131,36 @@ class Graph extends React.Component {
         {this.state.source === "example2" && (
           <CytoscapeComponent
             elements={example2}
+            style={{
+              width: "1200px",
+              height: "600px",
+              border: "solid 5px black"
+            }}
+            layout={layout}
+            cy={cy => {
+              cy.on("tap", "node", evt => {
+                var node = evt.target;
+                console.log("tapped " + node.id());
+                this.props.setMetrics({
+                  closeness: cy
+                    .$()
+                    .cc({ root: "#" + node.id(), directed: false }),
+                  betweeness: cy
+                    .$()
+                    .bc()
+                    .betweenness("#" + node.id()),
+                  degree: cy.$().dc({ root: "#" + node.id(), directed: true })
+                });
+                console.log("max", cy.$().maxDegree(false));
+              });
+              this.cy = cy;
+            }}
+          />
+        )}
+        {this.state.source === "example3" && (
+          <CytoscapeComponent
+            elements={data}
+            stylesheet={dataStyle}
             style={{
               width: "1200px",
               height: "600px",
