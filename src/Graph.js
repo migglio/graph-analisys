@@ -4,20 +4,21 @@ import CytoscapeComponent from "react-cytoscapejs";
 import networks from "./networks";
 import "antd/dist/antd.css";
 import "./index.css";
-import { Typography } from "antd";
-import { Select } from "antd";
-import data from "./data.json"
-import dataStyle from "./data-style.json"
+import { Typography, Select, Button } from "antd";
+import data from "./data.json";
+import dataStyle from "./data-style.json";
+import ReactFileReader from "react-file-reader";
+import { file } from "@babel/types";
 const { Text } = Typography;
 const { Option } = Select;
 
 class Graph extends React.Component {
   state = {
     layout: "concentric",
-    source: "example1"
+    source: "example1",
+    fileData: null
   };
   shouldComponentUpdate(props, nextprops) {
-    console.log(this.state, nextprops);
     return (
       this.state.layout !== nextprops.layout ||
       this.state.source !== nextprops.source
@@ -49,13 +50,11 @@ class Graph extends React.Component {
       { data: { source: "8", target: "5", label: "Edge from Node1 to Node2" } }
     ];
     const example2 = CytoscapeComponent.normalizeElements(networks.elements);
-    
     let layout = {
       name: this.state.layout,
       minNodeSpacing: 100,
       directed: true
     };
-    console.log("render", dataStyle);
     return (
       <div>
         <div style={{ display: "flex" }}>
@@ -91,12 +90,29 @@ class Graph extends React.Component {
               value={this.state.source}
               onChange={value => {
                 this.setState({ source: value });
+                this.props.setReport(null);
               }}
             >
               <Option value={"example1"}>Ejemplo 1</Option>
               <Option value={"example2"}>Ejemplo 2 desde archivo</Option>
               <Option value={"example3"}>Ejemplo 3 </Option>
+              {this.state.fileData && <Option value={"file"}>Archivo </Option>}
             </Select>
+          </div>
+          <div style={{ margin: "auto", display: "flex" }}>
+            <Button
+              onClick={() => this.generateReport(this.cy, this.props.setReport)}
+            >
+              Generar Reporte
+            </Button>
+            <ReactFileReader
+              fileTypes={[".json"]}
+              base64={false}
+              multipleFiles={false}
+              handleFiles={this.handleFiles}
+            >
+              <Button> Cargar desde archivo</Button>
+            </ReactFileReader>
           </div>
         </div>
         {this.state.source === "example1" && (
@@ -128,9 +144,9 @@ class Graph extends React.Component {
             }}
           />
         )}
-        {this.state.source === "example2" && (
+        {this.state.source === "file" && this.state.fileData && (
           <CytoscapeComponent
-            elements={example2}
+            elements={this.state.fileData}
             style={{
               width: "1200px",
               height: "600px",
@@ -171,8 +187,13 @@ class Graph extends React.Component {
               cy.on("tap", "node", evt => {
                 var node = evt.target;
                 this.props.setMetrics({
-                  closeness: cy.$().cc({ root: "#" + node.id(), directed: false }),
-                  betweeness: cy.$().bc().betweenness("#" + node.id()),
+                  closeness: cy
+                    .$()
+                    .cc({ root: "#" + node.id(), directed: false }),
+                  betweeness: cy
+                    .$()
+                    .bc()
+                    .betweenness("#" + node.id()),
                   degree: cy.$().dc({ root: "#" + node.id(), directed: true })
                 });
               });
@@ -184,63 +205,45 @@ class Graph extends React.Component {
     );
   }
 
-  renderClusters = (layout, elems) => {
-    return (
-      <CytoscapeComponent
-        style={{
-          width: "1200px",
-          height: "600px",
-          border: "solid 5px black"
-        }}
-        layout={layout}
-        cy={cy => {
-          cy.add(elems);
-        }}
-      />
-    );
+  generateReport = (cy, setReport) => {
+    let result = "";
+    cy.filter(function(element, i) {
+      if (element.isNode()) {
+        const degree = cy.$().dc({ root: "#" + element.id(), directed: true });
+        const closeness = cy
+          .$()
+          .cc({ root: "#" + element.id(), directed: false })
+          .toFixed(2);
+        const betweeness = cy
+          .$()
+          .bc()
+          .betweenness("#" + element.id())
+          .toFixed(2);
+        result +=
+          `Nodo ${element.id()}: ` +
+          `Closeness: ${closeness} - Betweeness: ${betweeness} - ` +
+          `Indegree: ${degree.indegree} - Outdegree: ${degree.outdegree} \n`;
+
+        return true;
+      }
+      return false;
+    });
+    setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    }, 500);
+    setReport(result);
   };
-  /*
-  loadFromFile = () =>{
-     Promise.all([
-      fetch('cy-style.json', {mode: 'no-cors'})
-        .then(function(res) {
-          return res.json()
-        }),
-      fetch('data.json', {mode: 'no-cors'})
-        .then(function(res) {
-          return res.json()
-        })
-    ])
-      .then(function(dataArray) {
-        var cy = window.cy = cytoscape({
-          container: document.getElementById('cy'),
-    
-          layout: {
-            name: 'cose',
-            idealEdgeLength: 100,
-            nodeOverlap: 20,
-            refresh: 20,
-            fit: true,
-            padding: 30,
-            randomize: false,
-            componentSpacing: 100,
-            nodeRepulsion: 400000,
-            edgeElasticity: 100,
-            nestingFactor: 5,
-            gravity: 80,
-            numIter: 1000,
-            initialTemp: 200,
-            coolingFactor: 0.95,
-            minTemp: 1.0
-          },
-    
-          style: dataArray[0],
-    
-          elements: dataArray[1]
-    
-        });
-      });
-  } */
+
+  handleFiles = files => {
+    console.log(files);
+    let reader = new FileReader();
+    reader.onload = e => {
+      console.log(JSON.parse(e.target.result));
+      this.setState({ fileData: JSON.parse(e.target.result), source: "file" });
+    };
+    reader.readAsText(files[0]);
+  };
+ 
 }
 
 export default Graph;

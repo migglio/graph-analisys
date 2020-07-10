@@ -10,6 +10,7 @@ const App = () => {
     betweeness: 0,
     degree: { indegree: 0, outdegree: 0 }
   });
+  const [report, setReport] = useState("");
   return (
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
@@ -26,8 +27,24 @@ const App = () => {
           <h1 style={{ margin: 10 }}>Outdegree:{metrics.degree.outdegree}</h1>
         </div>
       </Tooltip>
-
-      <Graph setMetrics={setMetrics} />
+      <Graph setMetrics={setMetrics} setReport={setReport} />
+      {report && (
+        <div style={{width: "60%"}}>
+          <h1 style={{ margin: 10, textAlign: "center" }}>Reporte</h1>
+          <textarea
+            disabled
+            name="textarea"
+            style={{
+              width: "100%",
+              height: "40vh",
+              padding: "1%",
+              textAlign: "center"
+            }}
+          >
+            {report}
+          </textarea>
+        </div>
+      )}
     </div>
   );
 };
