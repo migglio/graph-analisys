@@ -170,18 +170,11 @@ class Graph extends React.Component {
             cy={cy => {
               cy.on("tap", "node", evt => {
                 var node = evt.target;
-                console.log("tapped " + node.id());
                 this.props.setMetrics({
-                  closeness: cy
-                    .$()
-                    .cc({ root: "#" + node.id(), directed: false }),
-                  betweeness: cy
-                    .$()
-                    .bc()
-                    .betweenness("#" + node.id()),
+                  closeness: cy.$().cc({ root: "#" + node.id(), directed: false }),
+                  betweeness: cy.$().bc().betweenness("#" + node.id()),
                   degree: cy.$().dc({ root: "#" + node.id(), directed: true })
                 });
-                console.log("max", cy.$().maxDegree(false));
               });
               this.cy = cy;
             }}
