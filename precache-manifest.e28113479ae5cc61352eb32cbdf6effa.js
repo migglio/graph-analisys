@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c0d5f1a6c6747a66d3f82918efefb0dd",
+    "revision": "71703974ad941607fa9572d62f08d5e0",
     "url": "/graph-analisys/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/graph-analisys/static/css/2.9ddb28ea.chunk.css"
   },
   {
-    "revision": "2ccd45fa87035cc71c4f",
+    "revision": "42d626bcca8b5c934f77",
     "url": "/graph-analisys/static/css/main.d1b05096.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/graph-analisys/static/js/2.7f6a6c45.chunk.js.LICENSE"
   },
   {
-    "revision": "2ccd45fa87035cc71c4f",
-    "url": "/graph-analisys/static/js/main.b854bdf7.chunk.js"
+    "revision": "42d626bcca8b5c934f77",
+    "url": "/graph-analisys/static/js/main.460ef790.chunk.js"
   },
   {
     "revision": "911af9b479597177be9a",
