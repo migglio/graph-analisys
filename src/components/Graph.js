@@ -12,7 +12,8 @@ class Graph extends React.Component {
   state = {
     layout: "concentric",
     source: "example1",
-    fileData: null
+    fileData: null,
+    mobile: false
   };
   shouldComponentUpdate(props, nextprops) {
     return (
@@ -20,6 +21,11 @@ class Graph extends React.Component {
       this.state.source !== nextprops.source
     );
   }
+  componentWillMount(){
+    if (window.innerWidth < 420)
+    this.setState({mobile: window.innerWidth < 420})
+  }
+
   componentDidMount() {}
   render() {
     let layout = {
@@ -27,6 +33,11 @@ class Graph extends React.Component {
       minNodeSpacing: 100,
       directed: true
     };
+    const dimensions = {
+      width: this.state.mobile ? "90vw": "80vw",
+      height:this.state.mobile ? "500px":  "600px",
+      margin: this.state.mobile ?  "auto" : ""
+    }
     return (
       <div>
         <Header
@@ -43,8 +54,7 @@ class Graph extends React.Component {
           <CytoscapeComponent
             elements={example1}
             style={{
-              width: "1200px",
-              height: "600px",
+             ...dimensions,
               border: "solid 5px black"
             }}
             layout={layout}
@@ -72,8 +82,7 @@ class Graph extends React.Component {
           <CytoscapeComponent
             elements={this.state.fileData}
             style={{
-              width: "1200px",
-              height: "600px",
+              ...dimensions,
               border: "solid 5px black"
             }}
             layout={layout}
@@ -102,8 +111,7 @@ class Graph extends React.Component {
             elements={example2}
             stylesheet={example2Style}
             style={{
-              width: "1200px",
-              height: "600px",
+              ...dimensions,
               border: "solid 5px black"
             }}
             layout={layout}

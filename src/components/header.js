@@ -15,7 +15,7 @@ const Header = ({
   setSource
 }) => {
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", flexWrap: "wrap" }}>
       <div>
         <Text>Seleccione layout de grafo</Text>
         <Select
@@ -42,7 +42,7 @@ const Header = ({
           {fileData && <Option value={"file"}>Archivo </Option>}
         </Select>
       </div>
-      <div style={{ margin: "auto", display: "flex" }}>
+      <div style={{ margin: "auto", display: "flex", flexWrap: "wrap" }}>
         <Button onClick={generateReport}>Generar Reporte</Button>
         <ReactFileReader
           fileTypes={[".json"]}

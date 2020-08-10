@@ -12,10 +12,10 @@ const App = () => {
   const [report, setReport] = useState("");
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      style={{ display: "flex", flexWrap: "wrap", flexDirection: "column", alignItems: "center" }}
     >
       <Tooltip title="Haga click en un nodo del grafo para obtener los datos asociados">
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", flexWrap: "wrap"}}>
           <h1 style={{ margin: 10 }}>
             Closeness:{metrics.closeness.toFixed(2)}
           </h1>

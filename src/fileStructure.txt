@@ -1,0 +1,22 @@
+Folder PATH listing
+Volume serial number is 8E64-70D7
+C:.
+|   fileStructure.txt
+|   index.css
+|   index.js
+|   logo.svg
+|   serviceWorker.js
+|   setupTests.js
+|   
++---components
+|       App.css
+|       App.js
+|       App.test.js
+|       Graph.js
+|       header.js
+|       
+\---data
+        example1.json
+        example2-style.json
+        example2.json
+        
